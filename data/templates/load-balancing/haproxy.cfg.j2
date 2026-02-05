@@ -53,7 +53,12 @@ defaults
 # Default ACME backend
 backend buildin_acme_certbot
     server localhost 127.0.0.1:{{ get_default_port('certbot_haproxy') }}
-
+# system_prometheus_exporter
+frontend 2
+    bind [::]:80 v4v6
+    mode http
+    http-request use-service prometheus-exporter if { path /metrics }
+    
 # Frontend
 {% if service is vyos_defined %}
 {%     for front, front_config in service.items() %}
